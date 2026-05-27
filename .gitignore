@@ -11,3 +11,8 @@ data/source/
 .serena/
 data/database.db-shm
 data/database.db-wal
+
+# Lokális build artefactok - ne kerüljenek a repo-ba
+data/database.db
+data/database.db.tmp
+tenk-legal-data.sql

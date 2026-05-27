@@ -82,7 +82,13 @@ function verifyPkce(verifier: string, challenge: string): boolean {
 function validateBearerToken(req: IncomingMessage): boolean {
   const auth = req.headers.authorization;
   if (!auth?.startsWith('Bearer ')) return false;
-  return oauthTokens.has(auth.slice(7));
+  const token = auth.slice(7);
+  // TENK shared-secret elfogadása szerver-szerver hívásokhoz
+  if (process.env.TENK_API_SECRET && token === process.env.TENK_API_SECRET) {
+    return true;
+  }
+  // Eredeti OAuth tokens (Claude Desktop kompatibilitás)
+  return oauthTokens.has(token);
 }
 
 // ---------------------------------------------------------------------------
