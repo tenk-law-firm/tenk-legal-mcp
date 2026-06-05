@@ -16,12 +16,32 @@
  */
 
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DB_PATH = resolve(__dirname, '../data/database.db');
-const CENSUS_PATH = resolve(__dirname, '../data/census.json');
+
+// Resolve data/ by walking up to the repo root (package.json + data/ present).
+// Works from scripts/ (source) and dist/scripts/ (compiled) without env magic.
+function resolveDataDir(): string {
+  if (process.env['DATA_DIR']) return resolve(process.env['DATA_DIR']);
+  let dir = __dirname;
+  for (let i = 0; i < 4; i++) {
+    if (existsSync(join(dir, 'package.json')) && existsSync(join(dir, 'data'))) {
+      return join(dir, 'data');
+    }
+    dir = dirname(dir);
+  }
+  // Explicit fallback candidates
+  for (const c of [join(__dirname, '..', 'data'), join(__dirname, '..', '..', 'data')]) {
+    if (existsSync(c)) return c;
+  }
+  throw new Error(`Cannot locate data/ directory from ${__dirname}`);
+}
+
+const DATA_DIR    = resolveDataDir();
+const DB_PATH     = process.env['LIVE_DB_PATH'] ?? join(DATA_DIR, 'database.db');
+const CENSUS_PATH = join(DATA_DIR, 'census.json');
 
 const MAX_DB_AGE_DAYS = Number(process.env['MAX_DB_AGE_DAYS'] ?? '90');
 const PORTAL_URL = 'https://njt.hu';
@@ -75,7 +95,7 @@ async function main(): Promise<void> {
 
   let buildDate: string | null = null;
   try {
-    const row = db.prepare("SELECT value FROM db_metadata WHERE key = 'build_date'").get() as { value: string } | undefined;
+    const row = db.prepare("SELECT value FROM db_metadata WHERE key = 'built_at'").get() as { value: string } | undefined;
     buildDate = row?.value ?? null;
   } catch {
     // db_metadata table may not exist
@@ -90,7 +110,7 @@ async function main(): Promise<void> {
       console.log(`OK: Database is ${age} days old (threshold: ${MAX_DB_AGE_DAYS} days)`);
     }
   } else {
-    console.log('WARN: No build_date in db_metadata — cannot assess age');
+    console.log('WARN: No built_at in db_metadata — cannot assess age');
   }
 
   // --- 3. Document count check ---

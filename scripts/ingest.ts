@@ -26,8 +26,8 @@ const __dirname = path.dirname(__filename);
 
 const SOURCE_DIR = path.resolve(__dirname, '../data/source');
 const SEED_DIR = path.resolve(__dirname, '../data/seed');
-const BLOCK_ENDPOINT = 'https://njt.hu/ajax/njtGetBlock.json';
-const SEARCH_URL_ENDPOINT = 'https://njt.hu/ajax/get_search_url.json';
+const BLOCK_ENDPOINT = 'https://njt.jog.gov.hu/ajax/njtGetBlock.json';
+const SEARCH_URL_ENDPOINT = 'https://njt.jog.gov.hu/ajax/get_search_url.json';
 
 type IngestStatus = 'OK' | 'cached' | 'METADATA_ONLY' | `HTTP ${number}` | 'NO_SECTION_CONTENT' | `ERROR: ${string}`;
 

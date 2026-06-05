@@ -99,11 +99,12 @@ export async function postJsonWithRateLimit(
       method: 'POST',
       headers: {
         'User-Agent': USER_AGENT,
-        'Accept': 'text/html,application/json,*/*',
+        'Accept': 'application/json, */*',
         'Content-Type': 'application/json; charset=utf-8',
+        'X-Requested-With': 'XMLHttpRequest',
       },
       body: JSON.stringify(payload),
-      redirect: 'follow',
+      redirect: 'manual',
     },
     maxRetries
   );
