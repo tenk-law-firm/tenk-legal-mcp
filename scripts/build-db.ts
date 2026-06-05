@@ -17,7 +17,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const SEED_DIR = path.resolve(__dirname, '../data/seed');
-const DB_PATH = path.resolve(__dirname, '../data/database.db');
+
+// Output path: --output <path> arg takes precedence, then DB_OUTPUT_PATH env, then default.
+function resolveDbOutputPath(): string {
+  const argIdx = process.argv.indexOf('--output');
+  if (argIdx !== -1 && process.argv[argIdx + 1]) {
+    return path.resolve(process.argv[argIdx + 1]);
+  }
+  if (process.env['DB_OUTPUT_PATH']) {
+    return path.resolve(process.env['DB_OUTPUT_PATH']);
+  }
+  return path.resolve(__dirname, '../data/database.db');
+}
+
+const DB_PATH = resolveDbOutputPath();
 
 // Seed file types
 interface DocumentSeed {

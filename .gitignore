@@ -1,18 +1,18 @@
+# Függőségek és build-output
 node_modules/
 dist/
-*.db
+
+# Adatbázis és ingest-adatok — NEM mennek gitbe (nagy bináris + újragenerálható)
+data/database.db
+data/database.db.*
+data/database.db.new
+data/seed/
+data/source/
+
+# Környezet és titkok
 .env
 .env.*
-.vercel
-.DS_Store
-coverage/
-data/source/
-.claude/
-.serena/
-data/database.db-shm
-data/database.db-wal
+*.local
 
-# Lokális build artefactok - ne kerüljenek a repo-ba
-data/database.db
-data/database.db.tmp
-tenk-legal-data.sql
+# OS / editor
+.DS_Store

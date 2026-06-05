@@ -52,9 +52,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
-const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf-8'));
-const SERVER_NAME: string = pkg.name.replace(/^@ansvar\//, '');
-const SERVER_VERSION: string = pkg.version;
+// Walk up from __dirname to find package.json — works whether built to dist/ or dist/src/
+function _readPkgInfo(): { name: string; version: string } {
+  for (const p of [
+    join(__dirname, 'package.json'),
+    join(__dirname, '..', 'package.json'),
+    join(__dirname, '..', '..', 'package.json'),
+  ]) {
+    try {
+      const c = JSON.parse(readFileSync(p, 'utf-8')) as Record<string, unknown>;
+      if (typeof c.name === 'string' && typeof c.version === 'string') return c as { name: string; version: string };
+    } catch { /* try next candidate */ }
+  }
+  return { name: 'law-mcp', version: '0.0.0' };
+}
+
+const _pkg = _readPkgInfo();
+const SERVER_NAME: string = _pkg.name.replace(/^@ansvar\//, '');
+const SERVER_VERSION: string = _pkg.version;
 const BASE_URL = process.env.BASE_URL || `https://law.49-13-169-95.nip.io`;
 
 // ---------------------------------------------------------------------------
@@ -283,12 +298,27 @@ async function main() {
           dbOk = true;
         } catch { /* DB not healthy */ }
 
+        // TENK: DB-frissesség kiolvasása (built_at a db_metadata-ból, fallback mtime)
+        let dbBuiltAt: string | null = null;
+        try {
+          const row = db.prepare("SELECT value FROM db_metadata WHERE key = 'built_at'").get() as { value: string } | undefined;
+          dbBuiltAt = row?.value ?? null;
+        } catch { /* tábla hiányozhat */ }
+        if (!dbBuiltAt) {
+          try { dbBuiltAt = statSync(resolveDbPath()).mtime.toISOString(); } catch { /* non-fatal */ }
+        }
+        const ageDays = dbBuiltAt
+          ? Math.floor((Date.now() - new Date(dbBuiltAt).getTime()) / 86_400_000)
+          : null;
+
         res.writeHead(dbOk ? 200 : 503, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           status: dbOk ? 'ok' : 'degraded',
           server: SERVER_NAME,
           version: SERVER_VERSION,
           uptime_seconds: Math.floor(process.uptime()),
+          db_built_at: dbBuiltAt,
+          db_age_days: ageDays,
         }));
         return;
       }
