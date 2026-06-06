@@ -1,0 +1,4 @@
+# Hungarian Law MCP — weekly DB refresh
+# Vasárnap 03:00 UTC. Csak exit 2 esetén indítja újra a szervert (lásd cron-run.sh).
+# MAX_DB_AGE_DAYS=7 biztosítja, hogy a heti futás STALE-t lásson és frissítsen.
+0 3 * * 0 MAX_DB_AGE_DAYS=7 /app/scripts/cron-run.sh >> /proc/1/fd/1 2>&1

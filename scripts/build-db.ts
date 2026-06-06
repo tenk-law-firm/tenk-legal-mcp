@@ -16,7 +16,28 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SEED_DIR = path.resolve(__dirname, '../data/seed');
+// Walk up from __dirname to find the repo root (directory containing both
+// package.json and data/).  Works from scripts/ (tsx source) and from
+// dist/scripts/ (compiled JS) without any env-var magic.
+function resolveDataDir(): string {
+  if (process.env['DATA_DIR']) return path.resolve(process.env['DATA_DIR']);
+  let dir = __dirname;
+  for (let i = 0; i < 4; i++) {
+    if (fs.existsSync(path.join(dir, 'package.json')) && fs.existsSync(path.join(dir, 'data'))) {
+      return path.join(dir, 'data');
+    }
+    dir = path.dirname(dir);
+  }
+  // Explicit fallback candidates
+  for (const c of [path.join(__dirname, '..', 'data'), path.join(__dirname, '..', '..', 'data')]) {
+    if (fs.existsSync(c)) return c;
+  }
+  // Last resort — let the caller surface a clear "not found" message
+  return path.join(__dirname, '..', 'data');
+}
+
+const DATA_DIR = resolveDataDir();
+const SEED_DIR = path.join(DATA_DIR, 'seed');
 
 // Output path: --output <path> arg takes precedence, then DB_OUTPUT_PATH env, then default.
 function resolveDbOutputPath(): string {
@@ -456,7 +477,7 @@ function buildDatabase(): void {
   loadAll();
 
   // Load EU mappings from seed file
-  const euMappingsPath = path.resolve(__dirname, '../data/eu-mappings.json');
+  const euMappingsPath = path.join(DATA_DIR, 'eu-mappings.json');
   if (fs.existsSync(euMappingsPath)) {
     const euMappings = JSON.parse(fs.readFileSync(euMappingsPath, 'utf-8')) as Array<{
       hungarian_document_id: string;
