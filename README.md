@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Kérdezz le **4 326 magyar jogszabályt** — a Ptk.-tól és Mt.-től a GDPR végrehajtási törvényig és a Btk.-ig — közvetlenül Claude-ból, Cursor-ból vagy bármely MCP-kompatibilis kliensből.
+Kérdezz le **4 329 magyar jogszabályt** — a Ptk.-tól és Mt.-től a GDPR végrehajtási törvényig és a Btk.-ig — közvetlenül Claude-ból, Cursor-ból vagy bármely MCP-kompatibilis kliensből.
 
 Ha jogi technológiát építesz, megfelelőségi eszközöket fejlesztesz, vagy magyar jogi kutatást végzel, ez a hitelesített referencia-adatbázisod.
 
