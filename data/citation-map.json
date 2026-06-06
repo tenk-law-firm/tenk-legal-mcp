@@ -1,0 +1,933 @@
+{
+  "_meta": {
+    "generated": "2026-06-06T08:36:07.570Z",
+    "source": "A lista (TENK) + B lista (Kúria) uniója — törvények, hatályos",
+    "validation": "tenk-legal-mcp.fly.dev live DB",
+    "counts": {
+      "primary": 146,
+      "aliases": 6,
+      "total": 152,
+      "problems": 0
+    }
+  },
+  "entries": [
+    {
+      "abbrev": "Abtv.",
+      "document_id": "hu-law-2011-151-00-00",
+      "title": "2011. évi CLI. törvény az Alkotmánybíróságról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Áfa tv.",
+      "document_id": "hu-law-2007-127-00-00",
+      "title": "2007. évi CXXVII. törvény az általános forgalmi adóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Áht.",
+      "document_id": "hu-law-2011-195-00-00",
+      "title": "2011. évi CXCV. törvény az államháztartásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ákr.",
+      "document_id": "hu-law-2016-150-00-00",
+      "title": "2016. évi CL. törvény az általános közigazgatási rendtartásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Állampolg. tv.",
+      "document_id": "hu-law-1993-55-00-00",
+      "title": "1993. évi LV. törvény a magyar állampolgárságról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Art.",
+      "document_id": "hu-law-2017-150-00-00",
+      "title": "2017. évi CL. törvény az adózás rendjéről",
+      "in_force": true
+    },
+    {
+      "abbrev": "ÁSZ tv.",
+      "document_id": "hu-law-2011-66-00-00",
+      "title": "2011. évi LXVI. törvény az Állami Számvevőszékről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ávt.",
+      "document_id": "hu-law-1998-28-00-00",
+      "title": "1998. évi XXVIII. törvény az állatok védelméről és kíméletéről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Be.",
+      "document_id": "hu-law-2017-90-00-00",
+      "title": "2017. évi XC. törvény a büntetőeljárásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Bit.",
+      "document_id": "hu-law-2014-40-00-00",
+      "title": "2014. évi XL. törvény a biztosítási tevékenységről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Bjt.",
+      "document_id": "hu-law-2011-162-00-00",
+      "title": "2011. évi CLXII. törvény a bírák jogállásáról és javadalmazásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Bnytv.",
+      "document_id": "hu-law-2009-47-00-00",
+      "title": "2009. évi XLVII. törvény a bűnügyi nyilvántartási rendszerről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Bszi.",
+      "document_id": "hu-law-2011-161-00-00",
+      "title": "2011. évi CLXI. törvény a bíróságok szervezetéről és igazgatásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Bszt.",
+      "document_id": "hu-law-2007-138-00-00",
+      "title": "2007. évi CXXXVIII. törvény a befektetési vállalkozásokról és az árutőzsdei szolgáltatókról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Btk.",
+      "document_id": "hu-law-2012-100-00-00",
+      "title": "2012. évi C. törvény a Büntető Törvénykönyvről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Btká.",
+      "document_id": "hu-law-2012-223-00-00",
+      "title": "2012. évi CCXXIII. törvény a 2012. évi C. törvény hatálybalépéséhez kapcsolódó átmeneti rendelkezésekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Bv.tv.",
+      "document_id": "hu-law-2013-240-00-00",
+      "title": "2013. évi CCXL. törvény a büntetések, az intézkedések, egyes kényszerintézkedések és a szabálysértési elzárás végrehajtásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Civil tv.",
+      "document_id": "hu-law-2011-175-00-00",
+      "title": "2011. évi CLXXV. törvény az egyesülési jogról, a közhasznú jogállásról, valamint a civil szervezetek működéséről és támogatásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ctv.",
+      "document_id": "hu-law-2006-5-00-00",
+      "title": "2006. évi V. törvény a cégnyilvánosságról, a bírósági cégeljárásról és a végelszámolásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Csődtv.",
+      "document_id": "hu-law-1991-49-00-00",
+      "title": "1991. évi XLIX. törvény a csődeljárásról és a felszámolási eljárásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Cst.",
+      "document_id": "hu-law-1998-84-00-00",
+      "title": "1998. évi LXXXIV. törvény a családok támogatásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ebktv.",
+      "document_id": "hu-law-2003-125-00-00",
+      "title": "2003. évi CXXV. törvény az egyenlő bánásmódról és az esélyegyenlőség előmozdításáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ebtv.",
+      "document_id": "hu-law-1997-83-00-00",
+      "title": "1997. évi LXXXIII. törvény a kötelező egészségbiztosítás ellátásairól",
+      "in_force": true
+    },
+    {
+      "abbrev": "Efo. tv.",
+      "document_id": "hu-law-2010-75-00-00",
+      "title": "2010. évi LXXV. törvény az egyszerűsített foglalkoztatásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Eht.",
+      "document_id": "hu-law-2003-100-00-00",
+      "title": "2003. évi C. törvény az elektronikus hírközlésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ehtv.",
+      "document_id": "hu-law-2011-206-00-00",
+      "title": "2011. évi CCVI. törvény a lelkiismereti és vallásszabadság jogáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ekho.",
+      "document_id": "hu-law-2005-120-00-00",
+      "title": "2005. évi CXX. törvény az egyszerűsített közteherviselési hozzájárulásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Elismerési tv.",
+      "document_id": "hu-law-2001-100-00-00",
+      "title": "2001. évi C. törvény a külföldi bizonyítványok és oklevelek elismeréséről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Eutv.",
+      "document_id": "hu-law-2012-180-00-00",
+      "title": "2012. évi CLXXX. törvény az Európai Unió tagállamaival folytatott bűnügyi együttműködésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Eüak.",
+      "document_id": "hu-law-1997-47-00-00",
+      "title": "1997. évi XLVII. törvény az egészségügyi és a hozzájuk kapcsolódó személyes adatok kezeléséről és védelméről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Eütv.",
+      "document_id": "hu-law-1997-154-00-00",
+      "title": "1997. évi CLIV. törvény az egészségügyről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Evectv.",
+      "document_id": "hu-law-2009-115-00-00",
+      "title": "2009. évi CXV. törvény az egyéni vállalkozóról és az egyéni cégről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Evt.",
+      "document_id": "hu-law-2009-37-00-00",
+      "title": "2009. évi XXXVII. törvény az erdőről, az erdő védelméről és az erdőgazdálkodásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Felnőttképzési tv.",
+      "document_id": "hu-law-2013-77-00-00",
+      "title": "2013. évi LXXVII. törvény a felnőttképzésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Felsőokt. tv.",
+      "document_id": "hu-law-2011-204-00-00",
+      "title": "2011. évi CCIV. törvény a nemzeti felsőoktatásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Fétv.",
+      "document_id": "hu-law-2013-212-00-00",
+      "title": "2013. évi CCXII. törvény a mező- és erdőgazdasági földek forgalmáról szóló 2013. évi CXXII. törvénnyel összefüggő egyes rendelkezésekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Fgy. tv.",
+      "document_id": "hu-law-1997-155-00-00",
+      "title": "1997. évi CLV. törvény a fogyasztóvédelemről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Filmtv.",
+      "document_id": "hu-law-2004-2-00-00",
+      "title": "2004. évi II. törvény a mozgóképről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Flt.",
+      "document_id": "hu-law-1991-4-00-00",
+      "title": "1991. évi IV. törvény a foglalkoztatás elősegítéséről és a munkanélküliek ellátásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Fmhtv.",
+      "document_id": "hu-law-2009-50-00-00",
+      "title": "2009. évi L. törvény a fizetési meghagyásos eljárásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Fnyt.",
+      "document_id": "hu-law-2007-117-00-00",
+      "title": "2007. évi CXVII. törvény a foglalkoztatói nyugdíjról és intézményeiről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Földforgalmi tv.",
+      "document_id": "hu-law-2013-122-00-00",
+      "title": "2013. évi CXXII. törvény a mező- és erdőgazdasági földek forgalmáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Fttv.",
+      "document_id": "hu-law-2008-47-00-00",
+      "title": "2008. évi XLVII. törvény a fogyasztókkal szembeni tisztességtelen kereskedelmi gyakorlat tilalmáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ftv.",
+      "document_id": "hu-law-2004-24-00-00",
+      "title": "2004. évi XXIV. törvény a lőfegyverekről és lőszerekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Géntv.",
+      "document_id": "hu-law-1998-27-00-00",
+      "title": "1998. évi XXVII. törvény a géntechnológiai tevékenységről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Gfbt.",
+      "document_id": "hu-law-2009-62-00-00",
+      "title": "2009. évi LXII. törvény a kötelező gépjármű-felelősségbiztosításról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Gjt.",
+      "document_id": "hu-law-1991-82-00-00",
+      "title": "1991. évi LXXXII. törvény a gépjárműadóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Gyftv.",
+      "document_id": "hu-law-2006-98-00-00",
+      "title": "2006. évi XCVIII. törvény a biztonságos és gazdaságos gyógyszer- és gyógyászatisegédeszköz-ellátásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Gyógyszer tv.",
+      "document_id": "hu-law-2005-95-00-00",
+      "title": "2005. évi XCV. törvény az emberi alkalmazásra kerülő gyógyszerekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Gyülekezési tv.",
+      "document_id": "hu-law-2018-55-00-00",
+      "title": "2018. évi LV. törvény a gyülekezési jogról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Gyvt.",
+      "document_id": "hu-law-1997-31-00-00",
+      "title": "1997. évi XXXI. törvény a gyermekek védelméről és a gyámügyi igazgatásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Harmtv.",
+      "document_id": "hu-law-2019-56-00-00",
+      "title": "2019. évi LVI. törvény a harmadik országbeli állampolgárok beutazásáról és tartózkodásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "He.",
+      "document_id": "hu-law-2010-38-00-00",
+      "title": "2010. évi XXXVIII. törvény a hagyatéki eljárásról",
+      "in_force": true,
+      "alias_of": "Hetv."
+    },
+    {
+      "abbrev": "Helyi adó tv.",
+      "document_id": "hu-law-1990-100-00-00",
+      "title": "1990. évi C. törvény a helyi adókról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Hetv.",
+      "document_id": "hu-law-2010-38-00-00",
+      "title": "2010. évi XXXVIII. törvény a hagyatéki eljárásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Hghvtv.",
+      "document_id": "hu-law-2013-102-00-00",
+      "title": "2013. évi CII. törvény a halgazdálkodásról és a hal védelméről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Hjt.",
+      "document_id": "hu-law-2022-44-00-00",
+      "title": "2022. évi XLIV. törvény a honvédek jogállásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Hpt.",
+      "document_id": "hu-law-2013-237-00-00",
+      "title": "2013. évi CCXXXVII. törvény a hitelintézetekről és a pénzügyi vállalkozásokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ht.",
+      "document_id": "hu-law-2012-185-00-00",
+      "title": "2012. évi CLXXXV. törvény a hulladékról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Hulladéktv.",
+      "document_id": "hu-law-2012-185-00-00",
+      "title": "2012. évi CLXXXV. törvény a hulladékról",
+      "in_force": true,
+      "alias_of": "Ht."
+    },
+    {
+      "abbrev": "Hvt.",
+      "document_id": "hu-law-2021-109-00-00",
+      "title": "2021. évi CIX. törvény a honvédelemről és a Magyar Honvédségről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Iasz.",
+      "document_id": "hu-law-1997-68-00-00",
+      "title": "1997. évi LXVIII. törvény az igazságügyi alkalmazottak szolgálati jogviszonyáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Infotv.",
+      "document_id": "hu-law-2011-112-00-00",
+      "title": "2011. évi CXII. törvény az információs önrendelkezési jogról és az információszabadságról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Innovációs tv.",
+      "document_id": "hu-law-2014-76-00-00",
+      "title": "2014. évi LXXVI. törvény a tudományos kutatásról, fejlesztésről és innovációról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Inytv.",
+      "document_id": "hu-law-2021-100-00-00",
+      "title": "2021. évi C. törvény az ingatlan-nyilvántartásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Itv.",
+      "document_id": "hu-law-1990-93-00-00",
+      "title": "1990. évi XCIII. törvény az illetékekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Jat.",
+      "document_id": "hu-law-2010-130-00-00",
+      "title": "2010. évi CXXX. törvény a jogalkotásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Jht.",
+      "document_id": "hu-law-1997-30-00-00",
+      "title": "1997. évi XXX. törvény a jelzálog-hitelintézetről és a jelzáloglevélről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Jöt.",
+      "document_id": "hu-law-2016-68-00-00",
+      "title": "2016. évi LXVIII. törvény a jövedéki adóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Jstv.",
+      "document_id": "hu-law-2003-80-00-00",
+      "title": "2003. évi LXXX. törvény a jogi segítségnyújtásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Jszbt.",
+      "document_id": "hu-law-2001-104-00-00",
+      "title": "2001. évi CIV. törvény a jogi személlyel szemben alkalmazható büntetőjogi intézkedésekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kat.",
+      "document_id": "hu-law-2011-128-00-00",
+      "title": "2011. évi CXXVIII. törvény a katasztrófavédelemről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kbftv.",
+      "document_id": "hu-law-2014-16-00-00",
+      "title": "2014. évi XVI. törvény a kollektív befektetési formákról és kezelőikről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kbt.",
+      "document_id": "hu-law-2015-143-00-00",
+      "title": "2015. évi CXLIII. törvény a közbeszerzésekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kertv.",
+      "document_id": "hu-law-2005-164-00-00",
+      "title": "2005. évi CLXIV. törvény a kereskedelemről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kjnp.",
+      "document_id": "hu-law-2008-45-00-00",
+      "title": "2008. évi XLV. törvény az egyes közjegyzői nemperes eljárásokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kjt.",
+      "document_id": "hu-law-1992-33-00-00",
+      "title": "1992. évi XXXIII. törvény a közalkalmazottak jogállásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kjtv.",
+      "document_id": "hu-law-1991-41-00-00",
+      "title": "1991. évi XLI. törvény a közjegyzőkről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kknyt.",
+      "document_id": "hu-law-1999-84-00-00",
+      "title": "1999. évi LXXXIV. törvény a közúti közlekedési nyilvántartásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kkt.",
+      "document_id": "hu-law-1988-1-00-00",
+      "title": "1988. évi I. törvény a közúti közlekedésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Koncessziós tv.",
+      "document_id": "hu-law-1991-16-00-00",
+      "title": "1991. évi XVI. törvény a koncesszióról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Koncesszióstv.",
+      "document_id": "hu-law-1991-16-00-00",
+      "title": "1991. évi XVI. törvény a koncesszióról",
+      "in_force": true,
+      "alias_of": "Koncessziós tv."
+    },
+    {
+      "abbrev": "Kötv.",
+      "document_id": "hu-law-2001-64-00-00",
+      "title": "2001. évi LXIV. törvény a kulturális örökség védelméről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Közbesz. tv.",
+      "document_id": "hu-law-2015-143-00-00",
+      "title": "2015. évi CXLIII. törvény a közbeszerzésekről",
+      "in_force": true,
+      "alias_of": "Kbt."
+    },
+    {
+      "abbrev": "Közjegyzői tv.",
+      "document_id": "hu-law-1991-41-00-00",
+      "title": "1991. évi XLI. törvény a közjegyzőkről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Közjegyzői tv.",
+      "document_id": "hu-law-1991-41-00-00",
+      "title": "1991. évi XLI. törvény a közjegyzőkről",
+      "in_force": true,
+      "alias_of": "Kjtv."
+    },
+    {
+      "abbrev": "Köznev. tv.",
+      "document_id": "hu-law-2011-190-00-00",
+      "title": "2011. évi CXC. törvény a nemzeti köznevelésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kpt.",
+      "document_id": "hu-law-1991-25-00-00",
+      "title": "1991. évi XXV. törvény a tulajdonviszonyok rendezése érdekében, az állam által az állampolgárok tulajdonában igazságtalanul okozott károk részleges kárpótlásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Krt.",
+      "document_id": "hu-law-1996-48-00-00",
+      "title": "1996. évi XLVIII. törvény a közraktározásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ktdt.",
+      "document_id": "hu-law-2011-85-00-00",
+      "title": "2011. évi LXXXV. törvény a környezetvédelmi termékdíjról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kttv.",
+      "document_id": "hu-law-2011-199-00-00",
+      "title": "2011. évi CXCIX. törvény a közszolgálati tisztviselőkről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Kvt.",
+      "document_id": "hu-law-1995-53-00-00",
+      "title": "1995. évi LIII. törvény a környezet védelmének általános szabályairól",
+      "in_force": true
+    },
+    {
+      "abbrev": "Lakás tv.",
+      "document_id": "hu-law-1993-78-00-00",
+      "title": "1993. évi LXXVIII. törvény a lakások és helyiségek bérletére vonatkozó egyes szabályokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Mavtv.",
+      "document_id": "hu-law-2009-155-00-00",
+      "title": "2009. évi CLV. törvény a minősített adat védelméről",
+      "in_force": true
+    },
+    {
+      "abbrev": "MNBtv.",
+      "document_id": "hu-law-2013-139-00-00",
+      "title": "2013. évi CXXXIX. törvény a Magyar Nemzeti Bankról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Mny. tv.",
+      "document_id": "hu-law-1997-82-00-00",
+      "title": "1997. évi LXXXII. törvény a magánnyugdíjról és a magánnyugdíjpénztárakról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Mötv.",
+      "document_id": "hu-law-2011-189-00-00",
+      "title": "2011. évi CLXXXIX. törvény Magyarország helyi önkormányzatairól",
+      "in_force": true
+    },
+    {
+      "abbrev": "Mt.",
+      "document_id": "hu-law-2012-1-00-00",
+      "title": "2012. évi I. törvény a munka törvénykönyvéről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Mttv.",
+      "document_id": "hu-law-2010-185-00-00",
+      "title": "2010. évi CLXXXV. törvény a médiaszolgáltatásokról és a tömegkommunikációról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Munkavéd. tv.",
+      "document_id": "hu-law-1993-93-00-00",
+      "title": "1993. évi XCIII. törvény a munkavédelemről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Mvtv.",
+      "document_id": "hu-law-2018-53-00-00",
+      "title": "2018. évi LIII. törvény a magánélet védelméről",
+      "in_force": true
+    },
+    {
+      "abbrev": "NAV. tv.",
+      "document_id": "hu-law-2010-122-00-00",
+      "title": "2010. évi CXXII. törvény a Nemzeti Adó- és Vámhivatalról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Nbjt.",
+      "document_id": "hu-law-1996-38-00-00",
+      "title": "1996. évi XXXVIII. törvény a nemzetközi bűnügyi jogsegélyről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Nbtv.",
+      "document_id": "hu-law-1995-125-00-00",
+      "title": "1995. évi CXXV. törvény a nemzetbiztonsági szakszolgálatokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Nek tv.",
+      "document_id": "hu-law-2011-179-00-00",
+      "title": "2011. évi CLXXIX. törvény a nemzetiségek jogairól",
+      "in_force": true
+    },
+    {
+      "abbrev": "Netatv.",
+      "document_id": "hu-law-2011-103-00-00",
+      "title": "2011. évi CIII. törvény a népegészségügyi termékadóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Nmjtv.",
+      "document_id": "hu-law-2017-28-00-00",
+      "title": "2017. évi XXVIII. törvény a nemzetközi magánjogról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Nsztv.",
+      "document_id": "hu-law-2013-238-00-00",
+      "title": "2013. évi CCXXXVIII. törvény a népszavazás kezdeményezéséről, az európai polgári kezdeményezésről, valamint a népszavazási eljárásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Nytv.",
+      "document_id": "hu-law-1992-66-00-00",
+      "title": "1992. évi LXVI. törvény a polgárok személyi adatainak és lakcímének nyilvántartásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ob tv.",
+      "document_id": "hu-law-2011-111-00-00",
+      "title": "2011. évi CXI. törvény az alapvető jogok biztosáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Öpt.",
+      "document_id": "hu-law-1993-96-00-00",
+      "title": "1993. évi XCVI. törvény az Önkéntes Kölcsönös Biztosító Pénztárakról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Pénzmos. tv.",
+      "document_id": "hu-law-2017-53-00-00",
+      "title": "2017. évi LIII. törvény a pénzmosás és a terrorizmus finanszírozása megelőzéséről és megakadályozásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Postatv.",
+      "document_id": "hu-law-2012-159-00-00",
+      "title": "2012. évi CLIX. törvény a postai szolgáltatásokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Pp.",
+      "document_id": "hu-law-2016-130-00-00",
+      "title": "2016. évi CXXX. törvény a polgári perrendtartásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Praxistv.",
+      "document_id": "hu-law-2000-2-00-00",
+      "title": "2000. évi II. törvény az önálló orvosi tevékenységről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ptk.",
+      "document_id": "hu-law-2013-5-00-00",
+      "title": "2013. évi V. törvény a Polgári Törvénykönyvről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ptké.",
+      "document_id": "hu-law-2013-177-00-00",
+      "title": "2013. évi CLXXVII. törvény a Polgári Törvénykönyvről szóló 2013. évi V. törvény hatálybalépésével összefüggő átmeneti és felhatalmazó rendelkezésekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Reklámadó tv.",
+      "document_id": "hu-law-2014-22-00-00",
+      "title": "2014. évi XXII. törvény a reklámadóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Reklámtv.",
+      "document_id": "hu-law-2008-48-00-00",
+      "title": "2008. évi XLVIII. törvény a gazdasági reklámtevékenység alapvető feltételeiről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Rtv.",
+      "document_id": "hu-law-1994-34-00-00",
+      "title": "1994. évi XXXIV. törvény a Rendőrségről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Smtv.",
+      "document_id": "hu-law-2010-104-00-00",
+      "title": "2010. évi CIV. törvény a sajtószabadságról és a médiatartalmak alapvető szabályairól",
+      "in_force": true
+    },
+    {
+      "abbrev": "Stabilitási tv.",
+      "document_id": "hu-law-2011-194-00-00",
+      "title": "2011. évi CXCIV. törvény Magyarország gazdasági stabilitásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Státusztv.",
+      "document_id": "hu-law-2001-62-00-00",
+      "title": "2001. évi LXII. törvény a szomszédos államokban élő magyarokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szabs. tv.",
+      "document_id": "hu-law-2012-2-00-00",
+      "title": "2012. évi II. törvény a szabálysértésekről, a szabálysértési eljárásról és a szabálysértési nyilvántartási rendszerről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szakképzési tv.",
+      "document_id": "hu-law-2019-80-00-00",
+      "title": "2019. évi LXXX. törvény a szakképzésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Számv. tv.",
+      "document_id": "hu-law-2000-100-00-00",
+      "title": "2000. évi C. törvény a számvitelről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szja tv.",
+      "document_id": "hu-law-1995-117-00-00",
+      "title": "1995. évi CXVII. törvény a személyi jövedelemadóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szjt.",
+      "document_id": "hu-law-1999-76-00-00",
+      "title": "1999. évi LXXVI. törvény a szerzői jogról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szjtv.",
+      "document_id": "hu-law-1991-34-00-00",
+      "title": "1991. évi XXXIV. törvény a szerencsejáték szervezéséről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szmtv.",
+      "document_id": "hu-law-2007-1-00-00",
+      "title": "2007. évi I. törvény a szabad mozgás és tartózkodás jogával rendelkező személyek beutazásáról és tartózkodásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szoctv.",
+      "document_id": "hu-law-1993-3-00-00",
+      "title": "1993. évi III. törvény a szociális igazgatásról és szociális ellátásokról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Szövetkezeti tv.",
+      "document_id": "hu-law-2006-10-00-00",
+      "title": "2006. évi X. törvény a szövetkezetekről",
+      "in_force": true,
+      "alias_of": "Sztv."
+    },
+    {
+      "abbrev": "Sztv.",
+      "document_id": "hu-law-2006-10-00-00",
+      "title": "2006. évi X. törvény a szövetkezetekről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tám. tv.",
+      "document_id": "hu-law-2013-155-00-00",
+      "title": "2013. évi CLV. törvény a támogatott döntéshozatalról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tao tv.",
+      "document_id": "hu-law-1996-81-00-00",
+      "title": "1996. évi LXXXI. törvény a társasági adóról és az osztalékadóról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Társasházi tv.",
+      "document_id": "hu-law-2003-133-00-00",
+      "title": "2003. évi CXXXIII. törvény a társasházakról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tbj.",
+      "document_id": "hu-law-2019-122-00-00",
+      "title": "2019. évi CXXII. törvény a társadalombiztosítás ellátásaira jogosultakról, valamint ezen ellátások fedezetéről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tftv.",
+      "document_id": "hu-law-2021-32-00-00",
+      "title": "2021. évi XXXII. törvény a területfejlesztésről és a területrendezésről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tny.",
+      "document_id": "hu-law-1997-81-00-00",
+      "title": "1997. évi LXXXI. törvény a társadalombiztosítási nyugellátásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tpt.",
+      "document_id": "hu-law-2001-120-00-00",
+      "title": "2001. évi CXX. törvény a tőkepiacról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Tpvt.",
+      "document_id": "hu-law-1996-57-00-00",
+      "title": "1996. évi LVII. törvény a tisztességtelen piaci magatartás és a versenykorlátozás tilalmáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Útdíj tv.",
+      "document_id": "hu-law-2013-67-00-00",
+      "title": "2013. évi LXVII. törvény az autópályák, autóutak és főutak használatáért fizetendő, megtett úttal arányos díjról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Üsztv.",
+      "document_id": "hu-law-2011-164-00-00",
+      "title": "2011. évi CLXIV. törvény a legfőbb ügyész, az ügyészek és más ügyészségi alkalmazottak jogállásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ütv.",
+      "document_id": "hu-law-2011-163-00-00",
+      "title": "2011. évi CLXIII. törvény az ügyészségről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Vagyontv.",
+      "document_id": "hu-law-2007-106-00-00",
+      "title": "2007. évi CVI. törvény az állami vagyonról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Vbit.",
+      "document_id": "hu-law-2014-40-00-00",
+      "title": "2014. évi XL. törvény a biztosítási tevékenységről",
+      "in_force": true
+    },
+    {
+      "abbrev": "Vbt.",
+      "document_id": "hu-law-2017-60-00-00",
+      "title": "2017. évi LX. törvény a választottbíráskodásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Ve.",
+      "document_id": "hu-law-2013-36-00-00",
+      "title": "2013. évi XXXVI. törvény a választási eljárásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "VET",
+      "document_id": "hu-law-2007-86-00-00",
+      "title": "2007. évi LXXXVI. törvény a villamos energiáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Vht.",
+      "document_id": "hu-law-1994-53-00-00",
+      "title": "1994. évi LIII. törvény a bírósági végrehajtásról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Vjt.",
+      "document_id": "hu-law-2011-203-00-00",
+      "title": "2011. évi CCIII. törvény az országgyűlési képviselők választásáról",
+      "in_force": true
+    },
+    {
+      "abbrev": "Vtv.",
+      "document_id": "hu-law-1996-55-00-00",
+      "title": "1996. évi LV. törvény a vad védelméről, a vadgazdálkodásról, valamint a vadászatról",
+      "in_force": true
+    }
+  ]
+}

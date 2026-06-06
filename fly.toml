@@ -26,3 +26,8 @@ primary_region = "fra"
 [[vm]]
   size = "shared-cpu-1x"
   memory = "512mb"
+
+# Mindig újraindítja a gépet, bármilyen exit-kóddal áll le a PID 1
+# (beleértve az exit 0-t, amit a cron-run.sh SIGTERM-je vált ki frissítés után).
+[[restart]]
+  policy = "always"

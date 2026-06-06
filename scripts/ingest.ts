@@ -41,6 +41,11 @@ interface CliArgs {
   refreshDiscovery: boolean;
   resume: boolean;
   pageSize: 10 | 20 | 50;
+  // Decree mode
+  decrees: boolean;
+  decreeYear: number;
+  decreeSrs: number[] | null;   // null = discover all, array = test with specific srs
+  decreesInForceOnly: boolean;  // if true, skip repealed/expired decrees
 }
 
 interface DiscoverySeed {
@@ -164,6 +169,45 @@ function parseArgs(): CliArgs {
     }
   }
 
+  // Decree-mode args (parsed separately so they don't interfere with law-mode args)
+  let decrees = false;
+  let decreeYear = new Date().getFullYear();
+  let decreeSrs: number[] | null = null;
+  let decreesInForceOnly = false;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === '--decrees') {
+      decrees = true;
+      continue;
+    }
+
+    if (arg === '--decree-year' && args[i + 1]) {
+      const parsed = Number.parseInt(args[i + 1], 10);
+      if (Number.isFinite(parsed) && parsed >= 1990 && parsed <= 2100) {
+        decreeYear = parsed;
+      }
+      i++;
+      continue;
+    }
+
+    // --decree-srs 1,5,10,129  (comma-separated sorszámok for test ingest)
+    if (arg === '--decree-srs' && args[i + 1]) {
+      decreeSrs = args[i + 1]
+        .split(',')
+        .map(s => Number.parseInt(s.trim(), 10))
+        .filter(n => Number.isFinite(n) && n > 0);
+      i++;
+      continue;
+    }
+
+    if (arg === '--decrees-in-force-only') {
+      decreesInForceOnly = true;
+      continue;
+    }
+  }
+
   return {
     limit,
     start,
@@ -174,6 +218,10 @@ function parseArgs(): CliArgs {
     refreshDiscovery,
     resume,
     pageSize,
+    decrees,
+    decreeYear,
+    decreeSrs,
+    decreesInForceOnly,
   };
 }
 
@@ -500,6 +548,183 @@ function parseSourceCacheKey(act: ActIndexEntry): string {
   return act.id;
 }
 
+// ── Korm. rendelet discovery ──────────────────────────────────────────────────
+
+const ELI_BASE_URL = 'https://njt.jog.gov.hu/eli';
+
+/**
+ * Build the njt.hu internal documentId for a Korm. rendelet.
+ *   tip=20 (R = rendelet), kib=22 (Korm)
+ *   Pattern: {year}-{sr}-20-22
+ */
+function kormDecreeInternalId(year: number, sr: number): string {
+  return `${year}-${sr}-20-22`;
+}
+
+/**
+ * Build the MCP seed document ID for a Korm. rendelet.
+ *   Pattern: hu-decree-Korm-{year}-{sr}
+ */
+function kormDecreeSeedId(year: number, sr: number): string {
+  return `hu-decree-Korm-${year}-${sr}`;
+}
+
+/**
+ * Fetch /eli/R/{year}/Korm and return the highest sorszám found on the page.
+ * Returns 0 if the year has no decrees or the page is unavailable.
+ *
+ * Rate-limit safety:
+ *   - 429 → throws (NOT silent return 0) so the caller can abort cleanly
+ *   - fetchWithRateLimit already retries 429/5xx with exponential backoff;
+ *     if it still gets 429 after all retries, the error propagates here.
+ */
+async function discoverKormMaxSr(year: number): Promise<number> {
+  const url = `${ELI_BASE_URL}/R/${year}/Korm`;
+  const result = await fetchWithRateLimit(url);
+
+  if (result.status === 429) {
+    throw new Error(
+      `Rate-limited (HTTP 429) fetching ELI list ${url}. ` +
+      `Aborting decree discovery to avoid incomplete results.`
+    );
+  }
+  if (result.status !== 200) {
+    console.log(`  WARN: ELI list ${url} → HTTP ${result.status}, assuming 0 decrees for year ${year}`);
+    return 0;
+  }
+
+  // Links look like: /eli/R/2023/Korm/129
+  const matches = [...result.body.matchAll(/\/eli\/R\/\d+\/Korm\/(\d+)/g)];
+  const srs = matches.map(m => Number.parseInt(m[1], 10)).filter(n => Number.isFinite(n));
+  return srs.length > 0 ? Math.max(...srs) : 0;
+}
+
+/**
+ * Detect whether a Korm. rendelet ELI HTML page represents a repealed/expired decree.
+ *
+ * Two reliable signals (empirically confirmed):
+ *   1. class="jogszabaly ... hide-past-slices ..." on the main jogszabaly div
+ *      → the decree has been repealed or replaced
+ *   2. "hatályon kívül" text anywhere in the HTML
+ *      → explicit legislative repeal notice
+ *
+ * The <div class="hataly"> date is the effective-from date of the current
+ * version, NOT the expiry date — it alone is not a reliable repeal signal.
+ */
+function isDecreeRepealed(html: string): boolean {
+  // Signal 1: jogszabaly div carries hide-past-slices class
+  if (/class="jogszabaly[^"]*hide-past-slices/i.test(html)) return true;
+  // Signal 2: explicit "hatályon kívül" repeal notice
+  if (/hatályon kívül/i.test(html)) return true;
+  return false;
+}
+
+/**
+ * Discover Korm. rendeletek for a given year and build ActIndexEntry list.
+ *
+ * If sampleSrs is provided, only those specific sorszámok are fetched
+ * (used for test ingest to keep request count low).
+ * Otherwise all sorszámok from 1 to maxSr are iterated.
+ *
+ * @param inForceOnly  When true, repealed/expired decrees are excluded.
+ *
+ * Rate-limit behaviour:
+ *   - 404 → sorszám-gap, silently skip (NOT an error)
+ *   - 429 → throws after fetchWithRateLimit exhausts its retries — NEVER silent partial
+ *   - 5xx → fetchWithRateLimit retries with exponential backoff; throws if all fail
+ *   - network error → fetchWithRateLimit retries; throws if all fail
+ */
+async function discoverDecrees(
+  year: number,
+  sampleSrs?: number[],
+  inForceOnly = false
+): Promise<ActIndexEntry[]> {
+  let srsToFetch: number[];
+
+  if (sampleSrs && sampleSrs.length > 0) {
+    srsToFetch = sampleSrs;
+    console.log(
+      `  Decree discovery: test mode — ${srsToFetch.length} specific sorszámok for ${year}/Korm` +
+      (inForceOnly ? ' (in-force only)' : '')
+    );
+  } else {
+    const maxSr = await discoverKormMaxSr(year);
+    if (maxSr === 0) {
+      console.log(`  No Korm. rendeletek found for ${year}`);
+      return [];
+    }
+    console.log(
+      `  Decree discovery: iterating sr=1..${maxSr} for ${year}/Korm` +
+      (inForceOnly ? ' (in-force only)' : '')
+    );
+    srsToFetch = Array.from({ length: maxSr }, (_, i) => i + 1);
+  }
+
+  const acts: ActIndexEntry[] = [];
+  let gaps404 = 0;
+  let skippedRepealed = 0;
+
+  for (const sr of srsToFetch) {
+    const eliUrl = `${ELI_BASE_URL}/R/${year}/Korm/${sr}`;
+    const result = await fetchWithRateLimit(eliUrl);
+
+    if (result.status === 404) {
+      gaps404++;
+      continue;
+    }
+
+    if (result.status === 429) {
+      // fetchWithRateLimit already exhausted retries — do NOT swallow this
+      throw new Error(
+        `Rate-limited (HTTP 429) on ${eliUrl} after all retries. ` +
+        `${acts.length} decrees discovered so far. ` +
+        `Aborting to avoid silent partial corpus.`
+      );
+    }
+
+    if (result.status !== 200) {
+      console.log(`  WARN: ${eliUrl} → HTTP ${result.status}, skipping sr=${sr}`);
+      continue;
+    }
+
+    // Hatályosság detection
+    const repealed = isDecreeRepealed(result.body);
+    const status: ActIndexEntry['status'] = repealed ? 'repealed' : 'in_force';
+
+    if (inForceOnly && repealed) {
+      skippedRepealed++;
+      continue;
+    }
+
+    // Extract human title from meta tag (same pattern as law pages)
+    const titleMatch =
+      result.body.match(/<meta[^>]*id="meta_title"[^>]*content="([^"]+)"/i) ??
+      result.body.match(/<meta[^>]*name="title"[^>]*content="([^"]+)"/i) ??
+      result.body.match(/<title>([^<]+)<\/title>/i);
+    const rawTitle = titleMatch
+      ? titleMatch[1].replace(/ - Nemzeti Jogszabálytár$/, '').trim()
+      : `${sr}/${year}. (?) Korm. rendelet`;
+
+    acts.push({
+      id: kormDecreeSeedId(year, sr),
+      title: rawTitle,
+      shortName: `${sr}/${year}. Korm. r.`,
+      status,
+      url: `https://njt.jog.gov.hu/jogszabaly/${kormDecreeInternalId(year, sr)}`,
+      description: `${rawTitle} — Kormányrendelet, Nemzeti Jogszabálytár (njt.hu).`,
+      issuedDate: undefined,
+      inForceDate: undefined,
+    });
+  }
+
+  if (gaps404 > 0)      console.log(`  Sorszám-gaps (HTTP 404): ${gaps404}`);
+  if (skippedRepealed > 0) console.log(`  Skipped repealed/expired: ${skippedRepealed}`);
+  console.log(`  Discovered ${acts.length} Korm. rendeletek for ${year}` +
+    (inForceOnly ? ' (in-force)' : ` (${acts.filter(a => a.status === 'repealed').length} repealed included)`));
+
+  return acts;
+}
+
 async function fetchAndParseActs(acts: ActIndexEntry[], skipFetch: boolean, resume: boolean): Promise<void> {
   console.log(`\nProcessing ${acts.length} Hungarian statutes from njt.hu...\n`);
 
@@ -705,6 +930,35 @@ async function main(): Promise<void> {
   console.log('  Source: https://njt.hu (official Hungarian legal portal)');
   console.log('  Parse target: section-level text (szakasz, "§")');
   console.log('  Rate limit: 1200ms/request');
+
+  // ── Decree mode ────────────────────────────────────────────────────────────
+  if (args.decrees) {
+    console.log(`  Mode: Korm. rendelet ingest — year=${args.decreeYear}`);
+    if (args.decreeSrs) {
+      console.log(`  Sorszámok (test): ${args.decreeSrs.join(', ')}`);
+    } else {
+      console.log('  Sorszámok: full discovery (ELI iteration)');
+    }
+    if (args.decreesInForceOnly) console.log('  --decrees-in-force-only');
+    if (args.resume) console.log('  --resume');
+
+    console.log('\nDiscovering Korm. rendeletek via ELI...');
+    const decreeActs = await discoverDecrees(
+      args.decreeYear,
+      args.decreeSrs ?? undefined,
+      args.decreesInForceOnly
+    );
+
+    if (decreeActs.length === 0) {
+      console.log('No decrees to ingest.');
+      return;
+    }
+
+    await fetchAndParseActs(decreeActs, args.skipFetch, args.resume);
+    return;
+  }
+
+  // ── Law mode (existing logic — unchanged) ─────────────────────────────────
   console.log(`  Mode: ${args.full ? 'full corpus discovery' : 'curated corpus'}`);
 
   if (args.full) {
