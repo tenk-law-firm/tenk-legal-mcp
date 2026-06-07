@@ -35,6 +35,9 @@ import { registerTools } from './tools/registry.js';
 import { listSources as listSourcesFn } from './tools/list-sources.js';
 import { getAbout as getAboutFn } from './tools/about.js';
 import { detectCapabilities, readDbMetadata } from './capabilities.js';
+import { getProvision } from './tools/get-provision.js';
+import { searchLegislation } from './tools/search-legislation.js';
+import { checkCurrency } from './tools/check-currency.js';
 
 // Local type — avoids import from ./tools/about.js which may not exist in all repos.
 // The registerTools() `context` parameter is optional (`?`) so this is safe.
@@ -518,6 +521,125 @@ async function main() {
 
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Bad request — missing or invalid session' }));
+        return;
+      }
+
+      // -----------------------------------------------------------------------
+      // /tool/* — Proxy REST endpoints (session-less, Bearer auth required)
+      // -----------------------------------------------------------------------
+
+      // POST /tool/get_provision
+      if (url.pathname === '/tool/get_provision' && req.method === 'POST') {
+        if (!validateBearerToken(req)) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+        let gpBody: Record<string, unknown>;
+        try {
+          gpBody = JSON.parse(await readBody(req));
+        } catch {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+          return;
+        }
+        if (!gpBody.document_id || typeof gpBody.document_id !== 'string') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Missing required field: document_id' }));
+          return;
+        }
+        const gpInput: { document_id: string; provision_ref?: string } = {
+          document_id: gpBody.document_id,
+        };
+        if (gpBody.provision_ref && typeof gpBody.provision_ref === 'string') {
+          gpInput.provision_ref = gpBody.provision_ref;
+        }
+        try {
+          const gpResult = await getProvision(db, gpInput);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(gpResult));
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error(`[${SERVER_NAME}] /tool/get_provision error:`, err);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `get_provision failed: ${msg}` }));
+        }
+        return;
+      }
+
+      // POST /tool/search_legislation
+      if (url.pathname === '/tool/search_legislation' && req.method === 'POST') {
+        if (!validateBearerToken(req)) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+        let slBody: Record<string, unknown>;
+        try {
+          slBody = JSON.parse(await readBody(req));
+        } catch {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+          return;
+        }
+        if (!slBody.query || typeof slBody.query !== 'string') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Missing required field: query' }));
+          return;
+        }
+        const slInput: { query: string; document_id?: string; limit?: number } = {
+          query: slBody.query,
+        };
+        if (slBody.document_id && typeof slBody.document_id === 'string') {
+          slInput.document_id = slBody.document_id;
+        }
+        if (slBody.limit !== undefined) {
+          const lim = Number(slBody.limit);
+          if (!isNaN(lim) && lim > 0) slInput.limit = Math.floor(lim);
+        }
+        try {
+          const slResult = await searchLegislation(db, slInput);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(slResult));
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error(`[${SERVER_NAME}] /tool/search_legislation error:`, err);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `search_legislation failed: ${msg}` }));
+        }
+        return;
+      }
+
+      // POST /tool/check_currency
+      if (url.pathname === '/tool/check_currency' && req.method === 'POST') {
+        if (!validateBearerToken(req)) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+        let ccBody: Record<string, unknown>;
+        try {
+          ccBody = JSON.parse(await readBody(req));
+        } catch {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+          return;
+        }
+        if (!ccBody.document_id || typeof ccBody.document_id !== 'string') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Missing required field: document_id' }));
+          return;
+        }
+        try {
+          const ccResult = await checkCurrency(db, { document_id: ccBody.document_id });
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(ccResult));
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error(`[${SERVER_NAME}] /tool/check_currency error:`, err);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `check_currency failed: ${msg}` }));
+        }
         return;
       }
 
