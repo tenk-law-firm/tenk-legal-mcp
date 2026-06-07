@@ -112,6 +112,9 @@ function parseSectionFromMarker(rawMarker: string): string {
 function parseSectionFromKey(key: string): string {
   if (key.startsWith('ART_')) return key.slice(4);
   if (key.startsWith('LEGACY_')) return key.slice(7);
+  if (key.startsWith('CIKK_')) return key.slice(5);   // 'CIKK_A' → 'A'
+  if (key.startsWith('REND_')) return key.slice(5);   // 'REND_1' → '1'
+  if (key === 'PREAMB') return 'preamb';              // provision_ref: 'spreamb'
 
   const match = key.match(/^(\d+)([A-Z]+)?$/);
   if (!match) return key;
@@ -130,9 +133,23 @@ function sectionToKey(section: string): string {
 }
 
 function parseSectionKeyFromBlockId(blockId: string): string | null {
+  // §-alapú szakaszok (törvények, rendeletek): SZ1, SZ1A, stb.
   const sectionMatch = blockId.match(/^SZ(\d+)([A-Z]+)?(?:@.*)?$/);
-  if (!sectionMatch) return null;
-  return `${sectionMatch[1]}${sectionMatch[2] ?? ''}`;
+  if (sectionMatch) return `${sectionMatch[1]}${sectionMatch[2] ?? ''}`;
+
+  // Alaptörvény: Nemzeti Hitvallás (preambulum)
+  if (blockId === 'PR') return 'PREAMB';
+
+  // Alaptörvény: betűs cikkek — A)–U) cikk — csak a top-level blokk (CBA, CBB, ...), al-blokkok
+  // (CBA@BE1 stb.) nem kapnak új kulcsot, az activeSectionKey alá sorolódnak be.
+  const letterCikkMatch = blockId.match(/^CB([A-Z]+)$/);
+  if (letterCikkMatch) return `CIKK_${letterCikkMatch[1]}`;
+
+  // Alaptörvény: záró rendelkezések (AR1–AR32) — csak top-level blokk
+  const rendMatch = blockId.match(/^AR(\d+)$/);
+  if (rendMatch) return `REND_${rendMatch[1]}`;
+
+  return null;
 }
 
 function parseSectionFromText(blockHtml: string): string | null {
@@ -188,7 +205,10 @@ function extractNjtBlocks(html: string): NjtBlock[] {
 }
 
 function isSectionContentClass(blockClass: string): boolean {
-  return /(szakasz|bekezdes|pont|alpont|mondat|szoveg|szelet)/i.test(blockClass);
+  // cikk: elkapja a cikkBetu, cikkArab, cikkRomai Alaptörvény-osztályokat;
+  // rendelkezes: az Alaptörvény záró rendelkezéseinek top-level blokkjait.
+  // A meglévő törvény/rendelet osztályok (szakasz, bekezdes stb.) változatlanul működnek.
+  return /(szakasz|bekezdes|pont|alpont|mondat|szoveg|szelet|cikk|rendelkezes)/i.test(blockClass);
 }
 
 function isLegacyContentClass(blockClass: string): boolean {
@@ -197,6 +217,9 @@ function isLegacyContentClass(blockClass: string): boolean {
 
 function provisionTitleFromKey(key: string, section: string): string {
   if (key.startsWith('ART_')) return `${section}. Cikk`;
+  if (key.startsWith('CIKK_')) return `${section}) cikk`;   // 'A) cikk', 'B) cikk', stb.
+  if (key.startsWith('REND_')) return `${section}.`;         // '1.', '2.', stb.
+  if (key === 'PREAMB') return 'Nemzeti Hitvallás';
   if (key.startsWith('LEGACY_')) return section;
   return `${section}. §`;
 }
@@ -276,6 +299,19 @@ export function parseHungarianHtml(html: string, act: ActIndexEntry): ParsedAct 
       currentChapterNumber = htmlToText(blockHtml);
     } else if (blockClass === 'fejezetCim') {
       currentChapterTitle = htmlToText(blockHtml);
+    }
+
+    // Alaptörvény: alaptorvenyFejezet divek nincs jhId markerük, ezért a megelőző
+    // blokk HTML-jébe ágyazódnak be. Minden blokkban végigkeressük, és ha találunk,
+    // frissítjük a fejezetszámot (az utolsó nyer, ha több is van ugyanabban a blokkban).
+    for (const fejM of blockHtml.matchAll(
+      /<div[^>]*class="alaptorvenyFejezet"[^>]*>([\s\S]*?)<\/div>/gi
+    )) {
+      const fejText = htmlToText(fejM[1]);
+      if (fejText) {
+        currentChapterNumber = fejText;
+        currentChapterTitle = '';
+      }
     }
 
     const markerMatch = blockHtml.match(/<span class="szakasz-jel">([\s\S]*?)<\/span>/i);
@@ -363,7 +399,13 @@ export function parseHungarianHtml(html: string, act: ActIndexEntry): ParsedAct 
     const content = contentParts.join(' ').replace(/\s+/g, ' ').trim();
     if (content.length === 0) continue;
 
-    const provisionRef = toProvisionRef(section);
+    // Egyedi provision_ref az Alaptörvény betűs cikkeihez és záró rendelkezéseihez,
+    // megelőzve a 'si' (CIKK_I vs ART_I) és 's1–s32' (ART_1–32 vs REND_1–32) ütközést.
+    const provisionRef = sectionData.key.startsWith('CIKK_')
+      ? `scikk${sectionData.key.slice(5).toLowerCase()}`   // CIKK_A → 'scikka'
+      : sectionData.key.startsWith('REND_')
+      ? `srend${sectionData.key.slice(5)}`                  // REND_1 → 'srend1'
+      : toProvisionRef(section);
 
     provisions.push({
       provision_ref: provisionRef,
