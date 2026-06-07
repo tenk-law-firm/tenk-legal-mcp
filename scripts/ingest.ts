@@ -46,6 +46,8 @@ interface CliArgs {
   decreeYear: number;
   decreeSrs: number[] | null;   // null = discover all, array = test with specific srs
   decreesInForceOnly: boolean;  // if true, skip repealed/expired decrees
+  // Alaptörvény mode
+  alaptorveny: boolean;
 }
 
 interface DiscoverySeed {
@@ -208,6 +210,9 @@ function parseArgs(): CliArgs {
     }
   }
 
+  // Alaptörvény mode (separate pass — does not conflict with law/decree args)
+  const alaptorveny = args.includes('--alaptorveny');
+
   return {
     limit,
     start,
@@ -222,6 +227,7 @@ function parseArgs(): CliArgs {
     decreeYear,
     decreeSrs,
     decreesInForceOnly,
+    alaptorveny,
   };
 }
 
@@ -930,6 +936,36 @@ async function main(): Promise<void> {
   console.log('  Source: https://njt.hu (official Hungarian legal portal)');
   console.log('  Parse target: section-level text (szakasz, "§")');
   console.log('  Rate limit: 1200ms/request');
+
+  // ── Alaptörvény mode ───────────────────────────────────────────────────────
+  if (args.alaptorveny) {
+    console.log('  Mode: Alaptörvény ingest (Magyarország Alaptörvénye, 2011. április 25.)');
+    console.log('  ELI URI:  https://njt.jog.gov.hu/eli/Alaptv?datum=now');
+    console.log('  NJT URL:  https://njt.jog.gov.hu/jogszabaly/2011-4301-02-00');
+    console.log('  Seed ID:  hu-alaptorveny');
+    if (args.resume) console.log('  --resume');
+
+    const alaptorvenAct: ActIndexEntry = {
+      id: 'hu-alaptorveny',
+      title: 'Magyarország Alaptörvénye (2011. április 25.)',
+      titleEn: 'Fundamental Law of Hungary (25 April 2011)',
+      shortName: 'Alaptörvény',
+      status: 'in_force',
+      issuedDate: '2011-04-25',
+      inForceDate: '2012-01-01',
+      // A /jogszabaly/ URL szükséges, hogy extractNjtDocumentId('2011-4301-02-00')
+      // működjön a hydrateDeferredBlocks híváshoz.
+      url: 'https://njt.jog.gov.hu/jogszabaly/2011-4301-02-00',
+      description:
+        'Magyarország Alaptörvénye — a Magyar Köztársaság alaptörvénye (2011. április 25.), ' +
+        'jogrendünk alapja. Tartalmazza a Nemzeti Hitvallást (preambulumot), az Alapvetést ' +
+        '(A)–U) betűs cikkek), a Szabadság és Felelősség fejezetet (I.–XXXI. cikkek) és ' +
+        'Az állam fejezetet (1.–56. cikkek), valamint a záró rendelkezéseket.',
+    };
+
+    await fetchAndParseActs([alaptorvenAct], args.skipFetch, args.resume);
+    return;
+  }
 
   // ── Decree mode ────────────────────────────────────────────────────────────
   if (args.decrees) {
