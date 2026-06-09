@@ -8,6 +8,8 @@ data/database.db.*
 data/database.db.new
 data/seed/
 data/source/
+# Release-hez generált DB.gz — kész után törölhető
+database-hungarian-decrees.db.gz
 
 # Környezet és titkok
 .env
