@@ -20,7 +20,23 @@ sources:
       - "hu"
       - "en"
 
+  - name: "Nemzeti Jogszabálytár — Kormányrendeletek (Government Decrees)"
+    authority: "Magyar Közlöny (Hungarian Official Gazette)"
+    official_portal: "https://njt.jog.gov.hu/eli"
+    retrieval_method: "HTML_SCRAPE_ELI"
+    update_frequency: "weekly"
+    last_ingested: "2026-06-09"
+    license_or_terms:
+      type: "Official Hungarian legal text publication (see portal terms)"
+      url: "https://njt.hu"
+      summary: "Government decree texts sourced from the official national legislation portal via ELI endpoint."
+    coverage:
+      scope: "Full corpus of hatályos (in-force) Korm. rendeletek (government decrees), 1990–present. Discovered via /eli/R/{year}/Korm endpoint. Stored as statute-type records with hu-decree-Korm-{year}-{sr} IDs. Weekly cron refreshes current year + previous year."
+      limitations: "Only in-force decrees loaded (--decrees-in-force-only). Repealed decrees are excluded. 1 metadata-only record (1991-143, amending decree with no extractable body text)."
+    languages:
+      - "hu"
+
 data_freshness:
   automated_checks: true
   check_frequency: "weekly"
-  last_verified: "2026-02-21"
+  last_verified: "2026-06-09"

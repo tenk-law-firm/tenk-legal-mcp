@@ -245,7 +245,7 @@ async function main(): Promise<void> {
   const liveProvCount = await getLiveProvCount();
   log(`Live DB provision count (baseline): ${liveProvCount}`);
 
-  // ── Step 2: ingest ───────────────────────────────────────────────────────
+  // ── Step 2: ingest (törvények) ────────────────────────────────────────────
   log('Running ingest (--full --in-force-only --resume)...');
   const ingestCode = runScript(
     resolveScript('ingest'),
@@ -255,7 +255,26 @@ async function main(): Promise<void> {
     log(`ERROR: ingest exited with code ${ingestCode}. Live DB untouched.`);
     process.exit(1);
   }
-  log('Ingest completed successfully.');
+  log('Ingest (statutes) completed successfully.');
+
+  // ── Step 2b: ingest (Korm. rendeletek — idei + előző év) ─────────────────
+  // A teljes 1990–aktuális év korpusz megvan a seed-ekben; heti frissítéshez
+  // csak az aktuális és az előző év szükséges (év eleji/végi új rendeletek).
+  const currentYear = new Date().getFullYear();
+  for (const decreeYear of [currentYear, currentYear - 1]) {
+    log(`Running decree ingest for year ${decreeYear}...`);
+    const decreeCode = runScript(
+      resolveScript('ingest'),
+      ['--decrees', '--decree-year', String(decreeYear), '--decrees-in-force-only', '--resume'],
+    );
+    if (decreeCode !== 0) {
+      // Rendelet-ingest hiba: figyelmeztetés, de NEM állítjuk le a teljes folyamatot
+      // (a törvény-ingest rendben lefutott; a rendeletek pótlása következő héten).
+      log(`WARN: decree ingest for year ${decreeYear} exited with code ${decreeCode}. Continuing.`);
+    } else {
+      log(`Decree ingest for year ${decreeYear} completed.`);
+    }
+  }
 
   // ── Step 3: build-db into staging ────────────────────────────────────────
   cleanupStaging();
