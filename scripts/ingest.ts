@@ -606,23 +606,36 @@ async function discoverKormMaxSr(year: number): Promise<number> {
 }
 
 /**
- * Detect whether a Korm. rendelet ELI HTML page represents a repealed/expired decree.
+ * Detect whether a Korm. rendelet njt.hu HTML page represents a repealed/expired decree.
  *
- * Two reliable signals (empirically confirmed):
- *   1. class="jogszabaly ... hide-past-slices ..." on the main jogszabaly div
- *      → the decree has been repealed or replaced
- *   2. "hatályon kívül" text anywhere in the HTML
- *      → explicit legislative repeal notice
+ * A megbízható jel a Magyar Közlöny-szerkesztői lábjegyzet, amelynek alanya
+ * MAGA A RENDELET (nem egy §-a):
+ *   "A rendeletet a <X> hatályon kívül helyezte [DÁTUM napjával]."   (aktív hatályon kívül helyezés)
+ *   "A rendelet a 2010. évi CXXX. törvény 12/B. §-a alapján hatályát vesztette …"  (automatikus dereguláció)
  *
- * The <div class="hataly"> date is the effective-from date of the current
- * version, NOT the expiry date — it alone is not a reliable repeal signal.
+ * NEM jelent teljes hatályvesztést (a korábbi "hatályon kívül bárhol" jel ezeken
+ * tévedett, és hatályos rendeleteket zárt ki — pl. 446/2012):
+ *   "Az 1. § (3) bekezdését a <X> hatályon kívül helyezte."   (§-szintű jegyzet)
+ *   "A rendelet bevezető része a … alapján hatályát vesztette."   (részleges)
+ *
+ * A fordított irányú hibát is ez a minta javítja: a 106/2023 sajátmaga
+ * "hatályát vesztette" (12/B. § szerinti dereguláció), de a régi jel nem
+ * ismerte fel, mert nem "hatályon kívül" a szóhasználat.
+ *
+ * A <div class="hataly"> dátuma az aktuális időállapot kezdődátuma, NEM a
+ * lejárat — önmagában nem hatályvesztés-jel.
  */
 function isDecreeRepealed(html: string): boolean {
-  // Signal 1: jogszabaly div carries hide-past-slices class
+  // Strukturális jel (archív nézet) — ha jelen van, biztosan hatálytalan
   if (/class="jogszabaly[^"]*hide-past-slices/i.test(html)) return true;
-  // Signal 2: explicit "hatályon kívül" repeal notice
-  if (/hatályon kívül/i.test(html)) return true;
-  return false;
+
+  // Teljes-rendeleti hatályvesztés-jegyzet: mondat elején (bekezdés-kezdet,
+  // lábjegyzet-szám utáni pozíció vagy előző mondat vége után) "A rendelet(et)
+  // a/az …", majd MÉG UGYANABBAN a bekezdésben (a gap nem léphet át </p>-t) a
+  // hatályvesztés múlt idejű igéje.
+  const wholeDecreeRepealNote =
+    /(?:<p[^>]*>|<\/sup>|[.?!])\s*A rendelet(?:et)?\s+az?\s+(?:<(?!\/p\b)[^>]*>|[^<]){0,400}?(?:hatályon kívül helyezte|hatályát vesztette)/i;
+  return wholeDecreeRepealNote.test(html);
 }
 
 /**
@@ -701,6 +714,12 @@ async function discoverDecrees(
       skippedRepealed++;
       continue;
     }
+
+    // A letöltött oldal ugyanaz a /jogszabaly/ lap, amire az ELI URL átirányít —
+    // forrás-cache-be írjuk, hogy a fetchAndParseActs --skip-fetch módban ne
+    // kelljen még egyszer letölteni (feleződik a HTTP-kérések száma).
+    fs.mkdirSync(SOURCE_DIR, { recursive: true });
+    fs.writeFileSync(path.join(SOURCE_DIR, `${kormDecreeInternalId(year, sr)}.html`), result.body);
 
     // Extract human title from meta tag (same pattern as law pages)
     const titleMatch =

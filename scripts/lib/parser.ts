@@ -91,6 +91,12 @@ function normalizeExtractedText(input: string): string {
 function htmlToText(html: string): string {
   const text = decodeHtmlEntities(
     html
+      // A <script>/<style> blokkok TARTALMA nem jogszabályszöveg (njtConfig JS-keret,
+      // CSS) — a tag-eltávolítás előtt a teljes blokkot el kell dobni, különben a
+      // belső szöveg simán bekerülne a §-tartalomba.
+      .replace(/<script\b[\s\S]*?<\/script>/gi, '')
+      .replace(/<style\b[\s\S]*?<\/style>/gi, '')
+      .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/<sup[^>]*class="fnSup"[^>]*>[\s\S]*?<\/sup>/gi, '')
       .replace(/<br\s*\/?>/gi, '\n')
       .replace(/<\/?(?:p|div|li|ul|ol|tr|td|th|table|tbody|thead|tfoot|h[1-6])[^>]*>/gi, '\n')
@@ -172,6 +178,20 @@ function articleToKey(article: string): string {
   return `ART_${article.replace(/[^0-9A-Za-z]/g, '').toUpperCase()}`;
 }
 
+/**
+ * Az njt.hu oldal-keret kezdetét jelző elemek. A tartalmi (jhId-) blokkokban
+ * jogszerű szövegként SOHA nem fordulnak elő — ha egy blokk tartalmazza
+ * valamelyiket, ott a jogszabályszöveg véget ért és a lap-keret kezdődik
+ * (versionWindow, lábjegyzet-popup, mobil navigáció, footer, cookie-banner,
+ * njtConfig <script>). Két okból nyúlhat be a keret egy blokkba:
+ *   1. az utolsó jhId-marker utáni blokk a HTML végéig tart;
+ *   2. a hydrateDeferredBlocks az oldal-HTML UTÁN fűzi a deferred blokkokat,
+ *      így a keret a parser-input KÖZEPÉRE kerül (törvényeknél ez volt a
+ *      szennyezés útja).
+ */
+const PAGE_FRAME_CUT_RE =
+  /<div[^>]*(?:class="(?:versionWindow|footnoteDisplay)|id="(?:fake_footnote_display|navigation_panel|blank-clipboard-select-area))|<footer\b|<script\b|<style\b/i;
+
 function extractNjtBlocks(html: string): NjtBlock[] {
   const markerRegex = /<span class="jhId" id="([^"]+)"><\/span>/g;
   const markers = Array.from(html.matchAll(markerRegex));
@@ -187,7 +207,9 @@ function extractNjtBlocks(html: string): NjtBlock[] {
       ? markers[i + 1].index as number
       : html.length;
 
-    const blockHtml = html.slice(chunkStart, nextStart).trim();
+    let blockHtml = html.slice(chunkStart, nextStart).trim();
+    const frameCut = blockHtml.search(PAGE_FRAME_CUT_RE);
+    if (frameCut !== -1) blockHtml = blockHtml.slice(0, frameCut).trim();
     if (blockHtml.length === 0) continue;
 
     const classMatch = blockHtml.match(/^<(?:div|h1|h2)\b[^>]*class="([^"]*)"/i);
