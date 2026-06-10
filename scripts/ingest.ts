@@ -24,8 +24,29 @@ import { parseHungarianHtml, KEY_HUNGARIAN_ACTS, type ActIndexEntry, type Parsed
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SOURCE_DIR = path.resolve(__dirname, '../data/source');
-const SEED_DIR = path.resolve(__dirname, '../data/seed');
+// Walk up from __dirname to find the repo root (directory containing both
+// package.json and data/).  Works from scripts/ (tsx source) and from
+// dist/scripts/ (compiled JS); DATA_DIR env (Fly volume mount) wins.
+function resolveDataDir(): string {
+  if (process.env['DATA_DIR']) return path.resolve(process.env['DATA_DIR']);
+  let dir = __dirname;
+  for (let i = 0; i < 4; i++) {
+    if (fs.existsSync(path.join(dir, 'package.json')) && fs.existsSync(path.join(dir, 'data'))) {
+      return path.join(dir, 'data');
+    }
+    dir = path.dirname(dir);
+  }
+  // Explicit fallback candidates
+  for (const c of [path.join(__dirname, '..', 'data'), path.join(__dirname, '..', '..', 'data')]) {
+    if (fs.existsSync(c)) return c;
+  }
+  // Last resort — let the caller surface a clear "not found" message
+  return path.join(__dirname, '..', 'data');
+}
+
+const DATA_DIR = resolveDataDir();
+const SOURCE_DIR = path.join(DATA_DIR, 'source');
+const SEED_DIR = path.join(DATA_DIR, 'seed');
 const BLOCK_ENDPOINT = 'https://njt.jog.gov.hu/ajax/njtGetBlock.json';
 const SEARCH_URL_ENDPOINT = 'https://njt.jog.gov.hu/ajax/get_search_url.json';
 

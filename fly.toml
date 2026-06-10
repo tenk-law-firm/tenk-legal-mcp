@@ -7,6 +7,9 @@ primary_region = "fra"
 [env]
   NODE_ENV = "production"
   PORT = "3000"
+  # Az adatkönyvtár explicit kijelölése a volume-mountra — minden script
+  # (ingest/build-db/check-updates/cron-update) ebből oldja fel a data/ útvonalat.
+  DATA_DIR = "/app/data"
 
 [http_service]
   internal_port = 3000
