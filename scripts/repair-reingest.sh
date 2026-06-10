@@ -13,7 +13,11 @@ while IFS= read -r id; do
   [ -n "$id" ] && rm -f "data/seed/${id}.json"
 done < data/contaminated-laws.txt
 
-npm run ingest -- --full --in-force-only --resume --page-size 50
+# TELJES (in-force szűrő NÉLKÜLI) discovery: a DB történeti/hatálytalan
+# törvényeket is tartalmaz (régi Ptk., régi Btk. stb.), amelyek az in-force
+# listán nincsenek rajta — a szűrt discovery a 130-ból 35+7-et nem hozna
+# létre újra. A --resume miatt csak a hiányzó (törölt) seedek töltődnek le.
+npm run ingest -- --full --resume --page-size 50
 rc=$?
 if [ $rc -ne 0 ]; then
   echo "PHASE L FAILED (exit $rc) — a rendelet-fázist nem indítom, hogy a hiba ne maradjon észrevétlen."

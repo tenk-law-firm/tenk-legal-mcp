@@ -9,6 +9,9 @@
 const USER_AGENT =
   'Hungarian-Law-MCP/1.0 (+https://github.com/Ansvar-Systems/Hungarian-law-mcp; hello@ansvar.eu)';
 const MIN_DELAY_MS = 1200;
+// Kérés-szintű timeout: beragadt kapcsolat ne lógassa örökre a futást —
+// timeout után a hálózati-hiba ág retry-ol exponenciális backoffal.
+const REQUEST_TIMEOUT_MS = 30_000;
 
 let lastRequestTime = 0;
 
@@ -36,7 +39,7 @@ async function requestWithRetry(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     let response: Response;
     try {
-      response = await fetch(url, init);
+      response = await fetch(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
     } catch (error) {
       if (attempt < maxRetries) {
         const backoff = Math.pow(2, attempt + 1) * 1000;
