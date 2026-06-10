@@ -25,18 +25,18 @@ sources:
     official_portal: "https://njt.jog.gov.hu/eli"
     retrieval_method: "HTML_SCRAPE_ELI"
     update_frequency: "weekly"
-    last_ingested: "2026-06-09"
+    last_ingested: "2026-06-10"
     license_or_terms:
       type: "Official Hungarian legal text publication (see portal terms)"
       url: "https://njt.hu"
       summary: "Government decree texts sourced from the official national legislation portal via ELI endpoint."
     coverage:
-      scope: "Full corpus of hatályos (in-force) Korm. rendeletek (government decrees), 1990–present. Discovered via /eli/R/{year}/Korm endpoint. Stored as statute-type records with hu-decree-Korm-{year}-{sr} IDs. Weekly cron refreshes current year + previous year."
-      limitations: "Only in-force decrees loaded (--decrees-in-force-only). Repealed decrees are excluded. 1 metadata-only record (1991-143, amending decree with no extractable body text)."
+      scope: "Full corpus of hatályos (in-force) Korm. rendeletek (government decrees), 1990–present (2495 decrees, 48546 provisions as of 2026-06-10). Discovered via /eli/R/{year}/Korm endpoint. Repeal detection is footnote-subject based ('A rendelet(et) a/az … hatályon kívül helyezte / hatályát vesztette'), which correctly excludes self-deregulated decrees (Jat. 12/B automatic deregulation) and keeps decrees that only carry section-level repeal notes. Stored as statute-type records with hu-decree-Korm-{year}-{sr} IDs. Weekly cron refreshes current year + previous year with status re-evaluation (year seeds deleted and re-ingested, not resumed)."
+      limitations: "Only in-force decrees loaded (--decrees-in-force-only). Repealed decrees are excluded. 3 metadata-only records (1991-143, 1995-21, 1999-119 — amending decrees with no extractable body text). Decrees repealed mid-year outside the current+previous-year cron window are only re-classified on a full re-ingest."
     languages:
       - "hu"
 
 data_freshness:
   automated_checks: true
   check_frequency: "weekly"
-  last_verified: "2026-06-09"
+  last_verified: "2026-06-10"
