@@ -260,12 +260,25 @@ async function main(): Promise<void> {
   // ── Step 2b: ingest (Korm. rendeletek — idei + előző év) ─────────────────
   // A teljes 1990–aktuális év korpusz megvan a seed-ekben; heti frissítéshez
   // csak az aktuális és az előző év szükséges (év eleji/végi új rendeletek).
+  // A státusz-VÁLTOZÁSOK követéséhez (év közben hatályát vesztő rendelet) az
+  // érintett évek seedjeit töröljük és resume NÉLKÜL futunk — a --resume a
+  // meglévő (időközben esetleg hatálytalanná vált) seedet változatlanul
+  // hagyná. A --skip-fetch a discovery által frissen cache-elt oldalból
+  // parse-ol, így nincs dupla letöltés.
   const currentYear = new Date().getFullYear();
   for (const decreeYear of [currentYear, currentYear - 1]) {
+    const seedDir = path.join(DATA_DIR, 'seed');
+    if (fs.existsSync(seedDir)) {
+      for (const f of fs.readdirSync(seedDir)) {
+        if (f.startsWith(`hu-decree-Korm-${decreeYear}-`) && f.endsWith('.json')) {
+          try { fs.unlinkSync(path.join(seedDir, f)); } catch { /* ignore */ }
+        }
+      }
+    }
     log(`Running decree ingest for year ${decreeYear}...`);
     const decreeCode = runScript(
       resolveScript('ingest'),
-      ['--decrees', '--decree-year', String(decreeYear), '--decrees-in-force-only', '--resume'],
+      ['--decrees', '--decree-year', String(decreeYear), '--decrees-in-force-only', '--skip-fetch'],
     );
     if (decreeCode !== 0) {
       // Rendelet-ingest hiba: figyelmeztetés, de NEM állítjuk le a teljes folyamatot
