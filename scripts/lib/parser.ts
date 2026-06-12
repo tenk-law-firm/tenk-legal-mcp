@@ -88,8 +88,26 @@ function normalizeExtractedText(input: string): string {
     .trim();
 }
 
-function htmlToText(html: string): string {
-  const text = decodeHtmlEntities(
+/**
+ * Sort\u00f6r\u00e9s-\u0150RZ\u0150 normaliz\u00e1l\u00e1s a \u00a7-tartalom blokkokhoz: a div/p-hat\u00e1rokb\u00f3l
+ * sz\u00e1rmaz\u00f3 \n-ek megmaradnak (ezek az njt.hu vizu\u00e1lis sorai \u2014 bekezd\u00e9s,
+ * pont, alpont), a soron bel\u00fcli whitespace \u00f6sszevon\u00f3dik. A t\u00f6bbi mez\u0151
+ * (c\u00edm, fejezet, marker) a sima normalizeExtractedText-tel egysoros marad.
+ */
+function normalizeExtractedTextMultiline(input: string): string {
+  return input
+    .replace(/[\u00a0\u2000-\u200a\u202f\u205f\u3000]/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/ ?\n ?/g, '\n')
+    .replace(/\n{2,}/g, '\n')
+    .replace(/[ \t]+([,.;:!?])/g, '$1')
+    .replace(/\( +/g, '(')
+    .replace(/ +\)/g, ')')
+    .trim();
+}
+
+function htmlToRawText(html: string): string {
+  return decodeHtmlEntities(
     html
       // A <script>/<style> blokkok TARTALMA nem jogszabályszöveg (njtConfig JS-keret,
       // CSS) — a tag-eltávolítás előtt a teljes blokkot el kell dobni, különben a
@@ -102,8 +120,18 @@ function htmlToText(html: string): string {
       .replace(/<\/?(?:p|div|li|ul|ol|tr|td|th|table|tbody|thead|tfoot|h[1-6])[^>]*>/gi, '\n')
       .replace(/<[^>]+>/g, '')
   );
+}
 
-  return normalizeExtractedText(text);
+function htmlToText(html: string): string {
+  return normalizeExtractedText(htmlToRawText(html));
+}
+
+/**
+ * Sortörés-őrző változat a §-tartalom blokkokhoz — az njt.hu vizuális
+ * tördelését (bekezdések, pontok, alpontok soronként) a content hordozza.
+ */
+function htmlToTextLines(html: string): string {
+  return normalizeExtractedTextMultiline(htmlToRawText(html));
 }
 
 function parseSectionFromMarker(rawMarker: string): string {
@@ -413,12 +441,19 @@ export function parseHungarianHtml(html: string, act: ActIndexEntry): ParsedAct 
     if (!shouldIncludeSection(act.id, section)) continue;
 
     const contentParts = sectionData.blocks
-      .map(htmlToText)
+      .map(htmlToTextLines)
       .filter(part => part.length > 0);
 
     if (contentParts.length === 0) continue;
 
-    const content = contentParts.join(' ').replace(/\s+/g, ' ').trim();
+    // Blokk-határ = njt.hu vizuális sor — \n-nel fűzünk, a tördelés a content
+    // része (a frontend soronként rendereli/szúrja be). A csak-számjegy sor a
+    // lábjegyzet sorszáma (<sup>N</sup>) — a következő sorához vonjuk.
+    const content = contentParts.join('\n')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{2,}/g, '\n')
+      .replace(/(^|\n)(\d{1,3})\n/g, '$1$2 ')
+      .trim();
     if (content.length === 0) continue;
 
     // Egyedi provision_ref az Alaptörvény betűs cikkeihez és záró rendelkezéseihez,
