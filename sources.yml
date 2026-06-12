@@ -8,7 +8,7 @@ sources:
     official_portal: "https://njt.hu"
     retrieval_method: "HTML_SCRAPE"
     update_frequency: "weekly"
-    last_ingested: "2026-02-21"
+    last_ingested: "2026-06-12"
     license_or_terms:
       type: "Official Hungarian legal text publication (see portal terms)"
       url: "https://njt.hu"
@@ -39,4 +39,5 @@ sources:
 data_freshness:
   automated_checks: true
   check_frequency: "weekly"
-  last_verified: "2026-06-10"
+  last_verified: "2026-06-12"
+  notes: "Provision content preserves njt.hu visual line structure (newline-separated bekezdés/pont/alpont lines) since 2026-06-12; 6 legacy statutes retained with pre-2026-06-12 flat content (no longer indexed on njt.hu)."
