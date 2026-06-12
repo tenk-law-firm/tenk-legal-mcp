@@ -338,17 +338,40 @@ export function parseHungarianHtml(html: string, act: ActIndexEntry): ParsedAct 
   const definitions: ParsedDefinition[] = [];
   const blocks = extractNjtBlocks(html);
 
-  let currentChapterNumber = '';
-  let currentChapterTitle = '';
+  // Szerkezeti címhierarchia (njt blokk-osztályok): könyv › rész › cím (focim)
+  // › fejezet › alcím. Egy magasabb szint új értéke az alatta lévőket üríti.
+  // A provision.chapter a teljes aktuális útvonal, " › " elválasztóval.
+  const HEADING_LEVELS = ['konyv', 'resz', 'focim', 'fejezet', 'alcim'] as const;
+  const headingPath: string[] = ['', '', '', '', ''];
+  let currentFejezetCim = ''; // külön fejezetCim-blokkos törvényekhez
+
+  function setHeading(level: number, text: string): void {
+    headingPath[level] = text;
+    for (let i = level + 1; i < headingPath.length; i++) headingPath[i] = '';
+    if (level <= 3) currentFejezetCim = '';
+  }
+
+  function currentChapterPath(): string | undefined {
+    const fejezetIdx = 3;
+    const parts = headingPath.map((p, i) =>
+      i === fejezetIdx && currentFejezetCim ? [p, currentFejezetCim].filter(Boolean).join(' - ') : p,
+    );
+    const path = parts.filter(Boolean).join(' › ');
+    return path || undefined;
+  }
+
   let activeSectionKey: string | null = null;
 
   for (const block of blocks) {
     const { blockId, blockClass, blockHtml, blockPos } = block;
 
-    if (blockClass === 'fejezet') {
-      currentChapterNumber = htmlToText(blockHtml);
-    } else if (blockClass === 'fejezetCim') {
-      currentChapterTitle = htmlToText(blockHtml);
+    const trimmedClass = blockClass.trim();
+    const levelIdx = HEADING_LEVELS.indexOf(trimmedClass as (typeof HEADING_LEVELS)[number]);
+    if (levelIdx !== -1) {
+      const headingText = htmlToText(blockHtml);
+      if (headingText) setHeading(levelIdx, headingText);
+    } else if (trimmedClass === 'fejezetCim') {
+      currentFejezetCim = htmlToText(blockHtml);
     }
 
     // Alaptörvény: alaptorvenyFejezet divek nincs jhId markerük, ezért a megelőző
@@ -359,8 +382,7 @@ export function parseHungarianHtml(html: string, act: ActIndexEntry): ParsedAct 
     )) {
       const fejText = htmlToText(fejM[1]);
       if (fejText) {
-        currentChapterNumber = fejText;
-        currentChapterTitle = '';
+        setHeading(3, fejText);
       }
     }
 
@@ -388,13 +410,9 @@ export function parseHungarianHtml(html: string, act: ActIndexEntry): ParsedAct 
     let acc = sections.get(key);
 
     if (!acc) {
-      const chapter = [currentChapterNumber, currentChapterTitle]
-        .filter(Boolean)
-        .join(' - ') || undefined;
-
       acc = {
         key,
-        chapter,
+        chapter: currentChapterPath(),
         firstPos: blockPos,
         blocks: [],
       };
