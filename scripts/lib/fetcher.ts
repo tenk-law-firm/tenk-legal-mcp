@@ -37,9 +37,25 @@ async function requestWithRetry(
   maxRetries: number
 ): Promise<FetchResult> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    let response: Response;
     try {
-      response = await fetch(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+      const response = await fetch(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+
+      if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
+        const backoff = Math.pow(2, attempt + 1) * 1000;
+        console.log(`  HTTP ${response.status} for ${url}, retrying in ${backoff}ms...`);
+        await new Promise(resolve => setTimeout(resolve, backoff));
+        continue;
+      }
+
+      // A body-olvasás IS a try-n belül: a timeout a letöltés közben is
+      // elsülhet (response.text() abort) — annak is retry jár, nem fatal.
+      const body = await response.text();
+      return {
+        status: response.status,
+        body,
+        contentType: response.headers.get('content-type') ?? '',
+        url: response.url,
+      };
     } catch (error) {
       if (attempt < maxRetries) {
         const backoff = Math.pow(2, attempt + 1) * 1000;
@@ -50,21 +66,6 @@ async function requestWithRetry(
       }
       throw error;
     }
-
-    if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
-      const backoff = Math.pow(2, attempt + 1) * 1000;
-      console.log(`  HTTP ${response.status} for ${url}, retrying in ${backoff}ms...`);
-      await new Promise(resolve => setTimeout(resolve, backoff));
-      continue;
-    }
-
-    const body = await response.text();
-    return {
-      status: response.status,
-      body,
-      contentType: response.headers.get('content-type') ?? '',
-      url: response.url,
-    };
   }
 
   throw new Error(`Failed to fetch ${url} after ${maxRetries} retries`);
